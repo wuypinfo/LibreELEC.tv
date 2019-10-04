@@ -1,0 +1,105 @@
+From b3a34fc1bf93b5381e30e0eb7c0b8ec961a62535 Mon Sep 17 00:00:00 2001
+From: Neil Armstrong <narmstrong@baylibre.com>
+Date: Mon, 26 Aug 2019 11:29:40 +0200
+Subject: [PATCH 109/155] TEMP: clk: introduce clk_invalidate_rate()
+
+---
+ drivers/clk/clk.c   | 57 +++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/clk.h | 13 +++++++++++
+ 2 files changed, 70 insertions(+)
+
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 1c677d7f7f53..7f25e01a5bfb 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -2565,6 +2565,63 @@ int clk_set_parent(struct clk *clk, struct clk *parent)
+ }
+ EXPORT_SYMBOL_GPL(clk_set_parent);
+ 
++/**
++ * __clk_invalidate_tree
++ * @core: first clk in the subtree
++ *
++ * Walks the subtree of clks starting with clk and recalculates the parents,
++ * then accuracies and rates as it goes.
++ */
++static int __clk_invalidate_tree(struct clk_core *core)
++{
++	int ret;
++
++	core->parent = __clk_init_parent(core);
++
++	if (core->parent) {
++		ret = __clk_invalidate_tree(core->parent);
++		return ret;
++	}
++
++	__clk_recalc_accuracies(core);
++	__clk_recalc_rates(core, 0);
++
++	return 0;
++}
++
++static int clk_core_invalidate_rate(struct clk_core *core)
++{
++	int ret;
++
++	clk_prepare_lock();
++
++	ret = __clk_invalidate_tree(core);
++
++	clk_prepare_unlock();
++
++	return ret;
++}
++
++/**
++ * clk_invalidate_rate - invalidate and recalc rate of the clock and it's tree
++ * @clk: the clk whose rate is too be invalidated
++ *
++ * If it's known the actual hardware state of a clock tree has changed,
++ * this call will invalidate the cached rate of the clk and it's possible
++ * parents tree to permit recalculation of the actual rate.
++ *
++ * Returns 0 on success, -EERROR otherwise.
++ * If clk is NULL then returns 0.
++ */
++int clk_invalidate_rate(struct clk *clk)
++{
++	if (!clk)
++		return 0;
++
++	return clk_core_invalidate_rate(clk->core);
++}
++EXPORT_SYMBOL_GPL(clk_invalidate_rate);
++
+ static int clk_core_set_phase_nolock(struct clk_core *core, int degrees)
+ {
+ 	int ret = -EINVAL;
+diff --git a/include/linux/clk.h b/include/linux/clk.h
+index 18b7b95a8253..0849518e94e2 100644
+--- a/include/linux/clk.h
++++ b/include/linux/clk.h
+@@ -631,6 +631,19 @@ long clk_round_rate(struct clk *clk, unsigned long rate);
+  */
+ int clk_set_rate(struct clk *clk, unsigned long rate);
+ 
++/**
++ * clk_invalidate_rate - invalidate and recalc rate of the clock and it's tree
++ * @clk: the clk whose rate is too be invalidated
++ *
++ * If it's known the actual hardware state of a clock tree has changed,
++ * this call will invalidate the cached rate of the clk and it's possible
++ * parents tree to permit recalculation of the actual rate.
++ *
++ * Returns 0 on success, -EERROR otherwise.
++ * If clk is NULL then returns 0.
++ */
++int clk_invalidate_rate(struct clk *clk);
++
+ /**
+  * clk_set_rate_exclusive- set the clock rate and claim exclusivity over
+  *                         clock source
+-- 
+2.17.1
+

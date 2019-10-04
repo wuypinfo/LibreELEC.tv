@@ -1,0 +1,103 @@
+From 9d62926957dc3dc4e87029fd61799f837a549d25 Mon Sep 17 00:00:00 2001
+From: Christian Hewitt <christianshewitt@gmail.com>
+Date: Tue, 8 Oct 2019 05:02:20 +0000
+Subject: [PATCH 121/155] WIP: media: rc: add keymap for Tronsmart Vega S95/S96
+ remote
+
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ drivers/media/rc/keymaps/Makefile      |  1 +
+ drivers/media/rc/keymaps/rc-vega-s9x.c | 56 ++++++++++++++++++++++++++
+ include/media/rc-map.h                 |  1 +
+ 3 files changed, 58 insertions(+)
+ create mode 100644 drivers/media/rc/keymaps/rc-vega-s9x.c
+
+diff --git a/drivers/media/rc/keymaps/Makefile b/drivers/media/rc/keymaps/Makefile
+index a56fc634d2d6..4ab4af062abf 100644
+--- a/drivers/media/rc/keymaps/Makefile
++++ b/drivers/media/rc/keymaps/Makefile
+@@ -114,6 +114,7 @@ obj-$(CONFIG_RC_MAP) += rc-adstech-dvb-t-pci.o \
+ 			rc-tt-1500.o \
+ 			rc-twinhan-dtv-cab-ci.o \
+ 			rc-twinhan1027.o \
++			rc-vega-s9x.o \
+ 			rc-videomate-m1f.o \
+ 			rc-videomate-s350.o \
+ 			rc-videomate-tv-pvr.o \
+diff --git a/drivers/media/rc/keymaps/rc-vega-s9x.c b/drivers/media/rc/keymaps/rc-vega-s9x.c
+new file mode 100644
+index 000000000000..a573accf2e6f
+--- /dev/null
++++ b/drivers/media/rc/keymaps/rc-vega-s9x.c
+@@ -0,0 +1,56 @@
++// SPDX-License-Identifier: GPL-2.0+
++//
++// Copyright (C) 2019 Christian Hewitt <christianshewitt@gmail.com>
++
++#include <media/rc-map.h>
++#include <linux/module.h>
++
++//
++// Keytable for the Tronsmart Vega S9x remote control
++//
++
++static struct rc_map_table vega_s9x[] = {
++
++	{ 0x18, KEY_POWER },
++	{ 0x17, KEY_MUTE }, // mouse
++
++	{ 0x46, KEY_UP },
++	{ 0x47, KEY_LEFT },
++	{ 0x55, KEY_OK },
++	{ 0x15, KEY_RIGHT },
++	{ 0x16, KEY_DOWN },
++
++	{ 0x06, KEY_HOME },
++	{ 0x42, KEY_PLAYPAUSE},
++	{ 0x40, KEY_BACK },
++
++	{ 0x14, KEY_VOLUMEDOWN },
++	{ 0x04, KEY_MENU },
++	{ 0x10, KEY_VOLUMEUP },
++
++};
++
++static struct rc_map_list vega_s9x_map = {
++	.map = {
++		.scan     = vega_s9x,
++		.size     = ARRAY_SIZE(vega_s9x),
++		.rc_proto = RC_PROTO_NEC,
++		.name     = RC_MAP_VEGA_S9X,
++	}
++};
++
++static int __init init_rc_map_vega_s9x(void)
++{
++	return rc_map_register(&vega_s9x_map);
++}
++
++static void __exit exit_rc_map_vega_s9x(void)
++{
++	rc_map_unregister(&vega_s9x_map);
++}
++
++module_init(init_rc_map_vega_s9x)
++module_exit(exit_rc_map_vega_s9x)
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Christian Hewitt <christianshewitt@gmail.com");
+diff --git a/include/media/rc-map.h b/include/media/rc-map.h
+index afd2ab31bdf2..04b5efc1fe39 100644
+--- a/include/media/rc-map.h
++++ b/include/media/rc-map.h
+@@ -268,6 +268,7 @@ struct rc_map *rc_map_get(const char *name);
+ #define RC_MAP_TT_1500                   "rc-tt-1500"
+ #define RC_MAP_TWINHAN_DTV_CAB_CI        "rc-twinhan-dtv-cab-ci"
+ #define RC_MAP_TWINHAN_VP1027_DVBS       "rc-twinhan1027"
++#define RC_MAP_VEGA_S9X                  "rc-vega-s9x"
+ #define RC_MAP_VIDEOMATE_K100            "rc-videomate-k100"
+ #define RC_MAP_VIDEOMATE_S350            "rc-videomate-s350"
+ #define RC_MAP_VIDEOMATE_TV_PVR          "rc-videomate-tv-pvr"
+-- 
+2.17.1
+

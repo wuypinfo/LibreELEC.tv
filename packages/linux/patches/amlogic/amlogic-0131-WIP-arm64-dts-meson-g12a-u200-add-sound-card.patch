@@ -1,0 +1,189 @@
+From f69b4540e5395df9e0bf98c866ae0e2e72b27a4f Mon Sep 17 00:00:00 2001
+From: Christian Hewitt <christianshewitt@gmail.com>
+Date: Fri, 4 Oct 2019 06:20:06 +0000
+Subject: [PATCH 131/155] WIP: arm64: dts: meson-g12a-u200: add sound card
+
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ .../boot/dts/amlogic/meson-g12a-u200.dts      | 130 ++++++++++++++++++
+ 1 file changed, 130 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts b/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
+index 2a324f0136e3..1e117faa654d 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-g12a-u200.dts
+@@ -8,6 +8,7 @@
+ #include "meson-g12a.dtsi"
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/gpio/meson-g12a-gpio.h>
++#include <dt-bindings/sound/meson-g12a-tohdmitx.h>
+ 
+ / {
+ 	compatible = "amlogic,u200", "amlogic,g12a";
+@@ -70,6 +71,13 @@
+ 		regulator-always-on;
+ 	};
+ 
++	spdif_dit: audio-codec-1 {
++		#sound-dai-cells = <0>;
++		compatible = "linux,spdif-dit";
++		status = "okay";
++		sound-name-prefix = "DIT";
++	};
++
+ 	usb_pwr_en: regulator-usb_pwr_en {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "USB_PWR_EN";
+@@ -147,6 +155,90 @@
+ 		regulator-boot-on;
+ 		regulator-always-on;
+ 	};
++
++	sound {
++		compatible = "amlogic,axg-sound-card";
++		model = "G12A-U200";
++		audio-aux-devs = <&tdmout_b>;
++		audio-routing = "TDMOUT_B IN 0", "FRDDR_A OUT 1",
++				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
++				"TDMOUT_B IN 2", "FRDDR_C OUT 1",
++				"TDM_B Playback", "TDMOUT_B OUT",
++				"SPDIFOUT IN 0", "FRDDR_A OUT 3",
++				"SPDIFOUT IN 1", "FRDDR_B OUT 3",
++				"SPDIFOUT IN 2", "FRDDR_C OUT 3";
++
++		assigned-clocks = <&clkc CLKID_MPLL2>,
++				  <&clkc CLKID_MPLL0>,
++				  <&clkc CLKID_MPLL1>;
++		assigned-clock-parents = <0>, <0>, <0>;
++		assigned-clock-rates = <294912000>,
++				       <270950400>,
++				       <393216000>;
++		status = "okay";
++
++		dai-link-0 {
++			sound-dai = <&frddr_a>;
++		};
++
++		dai-link-1 {
++			sound-dai = <&frddr_b>;
++		};
++
++		dai-link-2 {
++			sound-dai = <&frddr_c>;
++		};
++
++		/* 8ch hdmi interface */
++		dai-link-3 {
++			sound-dai = <&tdmif_b>;
++			dai-format = "i2s";
++			dai-tdm-slot-tx-mask-0 = <1 1>;
++			dai-tdm-slot-tx-mask-1 = <1 1>;
++			dai-tdm-slot-tx-mask-2 = <1 1>;
++			dai-tdm-slot-tx-mask-3 = <1 1>;
++			mclk-fs = <256>;
++
++			codec {
++				sound-dai = <&tohdmitx TOHDMITX_I2S_IN_B>;
++			};
++		};
++
++		/* spdif hdmi or toslink interface */
++		dai-link-4 {
++			sound-dai = <&spdifout>;
++
++			codec-0 {
++				sound-dai = <&spdif_dit>;
++			};
++
++			codec-1 {
++				sound-dai = <&tohdmitx TOHDMITX_SPDIF_IN_A>;
++			};
++		};
++
++		/* spdif hdmi interface */
++		dai-link-5 {
++			sound-dai = <&spdifout_b>;
++
++			codec {
++				sound-dai = <&tohdmitx TOHDMITX_SPDIF_IN_B>;
++			};
++		};
++
++		/* hdmi glue */
++		dai-link-6 {
++			sound-dai = <&tohdmitx TOHDMITX_I2S_OUT>;
++
++			codec {
++				sound-dai = <&hdmi_tx>;
++			};
++		};
++	};
++};
++
++&arb {
++	status = "okay";
+ };
+ 
+ &cec_AO {
+@@ -191,6 +283,10 @@
+ 	clock-latency = <50000>;
+ };
+ 
++&clkc_audio {
++	status = "okay";
++};
++
+ &cvbs_vdac_port {
+ 	cvbs_vdac_out: endpoint {
+ 		remote-endpoint = <&cvbs_connector_in>;
+@@ -203,6 +299,18 @@
+ 	phy-mode = "rmii";
+ };
+ 
++&frddr_a {
++	status = "okay";
++};
++
++&frddr_b {
++	status = "okay";
++};
++
++&frddr_c {
++	status = "okay";
++};
++
+ &hdmi_tx {
+ 	status = "okay";
+ 	pinctrl-0 = <&hdmitx_hpd_pins>, <&hdmitx_ddc_pins>;
+@@ -288,6 +396,28 @@
+ 	vqmmc-supply = <&flash_1v8>;
+ };
+ 
++&spdifout {
++	pinctrl-0 = <&spdif_out_h_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++};
++
++&spdifout_b {
++	status = "okay";
++};
++
++&tdmif_b {
++	status = "okay";
++};
++
++&tdmout_b {
++	status = "okay";
++};
++
++&tohdmitx {
++	status = "okay";
++};
++
+ &uart_AO {
+ 	status = "okay";
+ 	pinctrl-0 = <&uart_ao_a_pins>;
+-- 
+2.17.1
+

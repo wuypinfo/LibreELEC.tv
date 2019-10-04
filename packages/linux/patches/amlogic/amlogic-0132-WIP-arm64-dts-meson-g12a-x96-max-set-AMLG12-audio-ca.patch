@@ -1,0 +1,27 @@
+From daaac6a32f351e5843ae7bc72589ae61689e64c6 Mon Sep 17 00:00:00 2001
+From: chewitt <github@chrishewitt.net>
+Date: Sat, 18 May 2019 08:11:40 +0000
+Subject: [PATCH 132/155] WIP: arm64: dts: meson-g12a-x96-max: set AMLG12
+ audio-card-name
+
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts b/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts
+index 4f2596d82989..0959a2e1de66 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-g12a-x96-max.dts
+@@ -150,7 +150,7 @@
+ 
+ 	sound {
+ 		compatible = "amlogic,axg-sound-card";
+-		model = "G12A-X96-MAX";
++		model = "AMLG12";
+ 		audio-aux-devs = <&tdmout_b>;
+ 		audio-routing = "TDMOUT_B IN 0", "FRDDR_A OUT 1",
+ 				"TDMOUT_B IN 1", "FRDDR_B OUT 1",
+-- 
+2.17.1
+

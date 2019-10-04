@@ -1,0 +1,36 @@
+From e3ff9b9318c3e9efe34070b6cbfc42b8ee426273 Mon Sep 17 00:00:00 2001
+From: Jonas Karlman <jonas@kwiboo.se>
+Date: Fri, 11 Oct 2019 14:43:30 +0000
+Subject: [PATCH 154/155] FROMGIT: drm/meson: Enable DRM InfoFrame support on
+ GXL, GXM and G12A
+
+This patch enables Dynamic Range and Mastering InfoFrame on GXL, GXM and G12A.
+
+Cc: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
+Reviewed-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Link: https://patchwork.freedesktop.org/patch/msgid/HE1PR06MB4011BB614A49253FD074BCCBAC9B0@HE1PR06MB4011.eurprd06.prod.outlook.com
+---
+ drivers/gpu/drm/meson/meson_dw_hdmi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/gpu/drm/meson/meson_dw_hdmi.c b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+index 68bbd987147b..93a7144e5f6d 100644
+--- a/drivers/gpu/drm/meson/meson_dw_hdmi.c
++++ b/drivers/gpu/drm/meson/meson_dw_hdmi.c
+@@ -969,6 +969,11 @@ static int meson_dw_hdmi_bind(struct device *dev, struct device *master,
+ 	dw_plat_data->input_bus_format = MEDIA_BUS_FMT_YUV8_1X24;
+ 	dw_plat_data->input_bus_encoding = V4L2_YCBCR_ENC_709;
+ 
++	if (dw_hdmi_is_compatible(meson_dw_hdmi, "amlogic,meson-gxl-dw-hdmi") ||
++	    dw_hdmi_is_compatible(meson_dw_hdmi, "amlogic,meson-gxm-dw-hdmi") ||
++	    dw_hdmi_is_compatible(meson_dw_hdmi, "amlogic,meson-g12a-dw-hdmi"))
++		dw_plat_data->use_drm_infoframe = true;
++
+ 	platform_set_drvdata(pdev, meson_dw_hdmi);
+ 
+ 	meson_dw_hdmi->hdmi = dw_hdmi_bind(pdev, encoder,
+-- 
+2.17.1
+

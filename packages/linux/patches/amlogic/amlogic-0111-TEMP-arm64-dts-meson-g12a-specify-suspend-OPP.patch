@@ -1,0 +1,24 @@
+From 49f960b1d354a26a38d4c3002fc2baa9d46a709c Mon Sep 17 00:00:00 2001
+From: Neil Armstrong <narmstrong@baylibre.com>
+Date: Tue, 27 Aug 2019 09:14:02 +0200
+Subject: [PATCH 111/155] TEMP: arm64: dts: meson-g12a: specify suspend OPP
+
+---
+ arch/arm64/boot/dts/amlogic/meson-g12a.dtsi | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi
+index fb0ab27d1f64..a6a7587aa63f 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12a.dtsi
+@@ -85,6 +85,7 @@
+ 		opp-1200000000 {
+ 			opp-hz = /bits/ 64 <1200000000>;
+ 			opp-microvolt = <731000>;
++			opp-suspend;
+ 		};
+ 
+ 		opp-1398000000 {
+-- 
+2.17.1
+

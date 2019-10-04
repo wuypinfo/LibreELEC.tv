@@ -1,0 +1,42 @@
+From 4a079643fc73247667000ba54fbccc2acadb04a5 Mon Sep 17 00:00:00 2001
+From: Neil Armstrong <narmstrong@baylibre.com>
+Date: Thu, 19 Sep 2019 11:36:25 +0200
+Subject: [PATCH 002/155] clk: meson: g12a: fix cpu clock rate setting
+
+CLK_SET_RATE_NO_REPARENT is wrongly set on the g12a cpu premux0 clocks
+flags, and CLK_SET_RATE_PARENT is required for the g12a cpu premux0 clock
+and the g12b cpub premux0 clock, otherwise CCF always selects the SYS_PLL
+clock to feed the cpu cluster.
+
+Fixes: ffae8475b90c ("clk: meson: g12a: add notifiers to handle cpu clock change")
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ drivers/clk/meson/g12a.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/clk/meson/g12a.c b/drivers/clk/meson/g12a.c
+index ea4c791f106d..33c7e04b4a82 100644
+--- a/drivers/clk/meson/g12a.c
++++ b/drivers/clk/meson/g12a.c
+@@ -353,8 +353,7 @@ static struct clk_regmap g12a_cpu_clk_premux0 = {
+ 			{ .hw = &g12a_fclk_div3.hw },
+ 		},
+ 		.num_parents = 3,
+-		/* This sub-tree is used a parking clock */
+-		.flags = CLK_SET_RATE_NO_REPARENT,
++		.flags = CLK_SET_RATE_PARENT,
+ 	},
+ };
+ 
+@@ -533,6 +532,7 @@ static struct clk_regmap g12b_cpub_clk_premux0 = {
+ 			{ .hw = &g12a_fclk_div3.hw },
+ 		},
+ 		.num_parents = 3,
++		.flags = CLK_SET_RATE_PARENT,
+ 	},
+ };
+ 
+-- 
+2.17.1
+

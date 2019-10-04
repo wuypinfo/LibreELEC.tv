@@ -1,0 +1,28 @@
+From 6faf9a7c2011bdb9087fa98359bd42d6585f97f5 Mon Sep 17 00:00:00 2001
+From: Maxime Jourdan <mjourdan@baylibre.com>
+Date: Mon, 19 Aug 2019 08:56:22 +0200
+Subject: [PATCH 108/155] TEMP: media: meson: vdec: add NV12 to G12A/H264
+
+Add single-buffer NV12 support to G12A/H264 for testing purposes.
+
+Signed-off-by: Maxime Jourdan <mjourdan@baylibre.com>
+---
+ drivers/staging/media/meson/vdec/vdec_platform.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/media/meson/vdec/vdec_platform.c b/drivers/staging/media/meson/vdec/vdec_platform.c
+index a1812520421b..484fd486ad15 100644
+--- a/drivers/staging/media/meson/vdec/vdec_platform.c
++++ b/drivers/staging/media/meson/vdec/vdec_platform.c
+@@ -361,7 +361,7 @@ static const struct amvdec_format vdec_formats_g12a[] = {
+ 		.vdec_ops = &vdec_1_ops,
+ 		.codec_ops = &codec_h264_ops,
+ 		.firmware_path = "meson/vdec/g12a_h264.bin",
+-		.pixfmts_cap = { V4L2_PIX_FMT_NV12M, 0 },
++		.pixfmts_cap = { V4L2_PIX_FMT_NV12, V4L2_PIX_FMT_NV12M, 0 },
+ 	}, {
+ 		.pixfmt = V4L2_PIX_FMT_MPEG1,
+ 		.min_buffers = 8,
+-- 
+2.17.1
+
