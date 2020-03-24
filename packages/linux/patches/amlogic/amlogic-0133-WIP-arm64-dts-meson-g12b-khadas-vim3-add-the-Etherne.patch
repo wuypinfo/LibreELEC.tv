@@ -1,7 +1,7 @@
-From 18c45f7de2df482640da464538e0b1ffae95fe9d Mon Sep 17 00:00:00 2001
+From f7de04e2674de491af1371dd509ae271171efe5a Mon Sep 17 00:00:00 2001
 From: chewitt <github@chrishewitt.net>
 Date: Sun, 11 Aug 2019 10:01:25 +0000
-Subject: [PATCH 133/155] WIP: arm64: dts: meson-g12b-khadas-vim3: add the
+Subject: [PATCH 133/148] WIP: arm64: dts: meson-g12b-khadas-vim3: add the
  Ethernet PHY interrupt line
 
 apply the same change as [0] to VIM3.
@@ -14,10 +14,10 @@ Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
  1 file changed, 25 insertions(+)
 
 diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
-index 554863429aa6..391c44871fa2 100644
+index c33e85fbdaba..8158a97a92cb 100644
 --- a/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
 +++ b/arch/arm64/boot/dts/amlogic/meson-g12b-khadas-vim3.dtsi
-@@ -152,6 +152,31 @@
+@@ -154,6 +154,31 @@
  	clock-latency = <50000>;
  };
  
