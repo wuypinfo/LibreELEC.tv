@@ -4,9 +4,9 @@
 PKG_NAME="network"
 PKG_VERSION=""
 PKG_LICENSE="various"
-PKG_SITE="http://www.openelec.tv"
+PKG_SITE="https://libreelec.tv"
 PKG_URL=""
-PKG_DEPENDS_TARGET="toolchain connman netbase ethtool openssh"
+PKG_DEPENDS_TARGET="toolchain connman netbase ethtool openssh iw wireless-regdb"
 PKG_SECTION="virtual"
 PKG_LONGDESC="Metapackage for various packages to install network support"
 
@@ -23,7 +23,7 @@ if [ "$OPENVPN_SUPPORT" = "yes" ]; then
 fi
 
 if [ "$WIREGUARD_SUPPORT" = "yes" ]; then
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET wireguard"
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET wireguard-tools wireguard-linux-compat"
 fi
 
 # nss needed by inputstream.adaptive, chromium etc.

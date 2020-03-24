@@ -2,8 +2,8 @@
 # Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="texturecache.py"
-PKG_VERSION="2.5.1"
-PKG_SHA256="bb8a7adca58d04a282af5c1ec5cb4c2dc012dda87510cc665ec4ba4ac7bc0cb3"
+PKG_VERSION="2.5.3"
+PKG_SHA256="19db4f96db4ba891c2ddc5b746e0b9b42eab4e1be0bdf0b2a4eea9b2e4d6aa73"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/MilhouseVH/texturecache.py"
 PKG_URL="https://github.com/MilhouseVH/$PKG_NAME/archive/$PKG_VERSION.tar.gz"
