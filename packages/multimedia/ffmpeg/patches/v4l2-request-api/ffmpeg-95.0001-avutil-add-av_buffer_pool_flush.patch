@@ -1,7 +1,7 @@
-From e6cec3f54693e7e2c10b6b7bc8f72daa6e9a77dc Mon Sep 17 00:00:00 2001
+From 3710124dd57ede7588884ecc86cbcaee5d530498 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Mon, 3 Dec 2018 23:48:04 +0100
-Subject: [PATCH] avutil: add av_buffer_pool_flush()
+Subject: [PATCH 01/12] avutil: add av_buffer_pool_flush()
 
 Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 ---

@@ -1,32 +1,32 @@
-From b810081f898fc4faec35519c6e7e9d275bf2bbcf Mon Sep 17 00:00:00 2001
+From ca0440a82038ebe56c467d89787291f55535d03d Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Sat, 15 Dec 2018 22:32:16 +0100
-Subject: [PATCH] Add common V4L2 request API code
+Subject: [PATCH 02/12] Add common V4L2 request API code
 
 Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
 ---
  configure                 |  12 +
  libavcodec/Makefile       |   1 +
  libavcodec/hwaccel.h      |   2 +
- libavcodec/v4l2_request.c | 919 ++++++++++++++++++++++++++++++++++++++
- libavcodec/v4l2_request.h |  69 +++
- 5 files changed, 1003 insertions(+)
+ libavcodec/v4l2_request.c | 943 ++++++++++++++++++++++++++++++++++++++
+ libavcodec/v4l2_request.h |  72 +++
+ 5 files changed, 1030 insertions(+)
  create mode 100644 libavcodec/v4l2_request.c
  create mode 100644 libavcodec/v4l2_request.h
 
 diff --git a/configure b/configure
-index 15e6c321b1..7f9e7e7b25 100755
+index 34c2adb4a4..6b41344dfd 100755
 --- a/configure
 +++ b/configure
-@@ -264,6 +264,7 @@ External library support:
+@@ -271,6 +271,7 @@ External library support:
    --enable-libtls          enable LibreSSL (via libtls), needed for https support
-                            if openssl or gnutls is not used [no]
+                            if openssl, gnutls or mbedtls is not used [no]
    --enable-libtwolame      enable MP2 encoding via libtwolame [no]
 +  --enable-libudev         enable libudev [no]
    --enable-libv4l2         enable libv4l2/v4l-utils [no]
    --enable-libvidstab      enable video stabilization using vid.stab [no]
    --enable-libvmaf         enable vmaf filter via libvmaf [no]
-@@ -324,6 +325,7 @@ External library support:
+@@ -337,6 +338,7 @@ External library support:
    --enable-omx-rpi         enable OpenMAX IL code for Raspberry Pi [no]
    --enable-rkmpp           enable Rockchip Media Process Platform code [no]
    --disable-v4l2-m2m       disable V4L2 mem2mem code [autodetect]
@@ -34,7 +34,7 @@ index 15e6c321b1..7f9e7e7b25 100755
    --disable-vaapi          disable Video Acceleration API (mainly Unix/Intel) code [autodetect]
    --disable-vdpau          disable Nvidia Video Decode and Presentation API for Unix code [autodetect]
    --disable-videotoolbox   disable VideoToolbox code [autodetect]
-@@ -1732,6 +1734,7 @@ EXTERNAL_LIBRARY_LIST="
+@@ -1797,6 +1799,7 @@ EXTERNAL_LIBRARY_LIST="
      libtesseract
      libtheora
      libtwolame
@@ -42,7 +42,7 @@ index 15e6c321b1..7f9e7e7b25 100755
      libv4l2
      libvorbis
      libvpx
-@@ -1782,6 +1785,7 @@ HWACCEL_LIBRARY_LIST="
+@@ -1851,6 +1854,7 @@ HWACCEL_LIBRARY_LIST="
      mmal
      omx
      opencl
@@ -50,23 +50,23 @@ index 15e6c321b1..7f9e7e7b25 100755
  "
  
  DOCUMENT_LIST="
-@@ -2783,6 +2787,7 @@ d3d11va_deps="dxva_h ID3D11VideoDecoder ID3D11VideoContext"
+@@ -2873,6 +2877,7 @@ d3d11va_deps="dxva_h ID3D11VideoDecoder ID3D11VideoContext"
  dxva2_deps="dxva2api_h DXVA2_ConfigPictureDecode ole32 user32"
  ffnvcodec_deps_any="libdl LoadLibrary"
  nvdec_deps="ffnvcodec"
 +v4l2_request_deps="linux_videodev2_h linux_media_h v4l2_timeval_to_ns libdrm libudev"
+ vaapi_x11_deps="xlib"
  videotoolbox_hwaccel_deps="videotoolbox pthreads"
  videotoolbox_hwaccel_extralibs="-framework QuartzCore"
- xvmc_deps="X11_extensions_XvMClib_h"
-@@ -6063,6 +6068,7 @@ enabled libtls            && require_pkg_config libtls libtls tls.h tls_configur
+@@ -6270,6 +6275,7 @@ enabled libtls            && require_pkg_config libtls libtls tls.h tls_configur
  enabled libtwolame        && require libtwolame twolame.h twolame_init -ltwolame &&
                               { check_lib libtwolame twolame.h twolame_encode_buffer_float32_interleaved -ltwolame ||
                                 die "ERROR: libtwolame must be installed and version must be >= 0.3.10"; }
 +enabled libudev           && require_pkg_config libudev libudev libudev.h udev_new
  enabled libv4l2           && require_pkg_config libv4l2 libv4l2 libv4l2.h v4l2_ioctl
  enabled libvidstab        && require_pkg_config libvidstab "vidstab >= 0.98" vid.stab/libvidstab.h vsMotionDetectInit
- enabled libvmaf           && require_pkg_config libvmaf "libvmaf >= 0.6.2" libvmaf.h compute_vmaf
-@@ -6153,6 +6159,10 @@ enabled rkmpp             && { require_pkg_config rkmpp rockchip_mpp  rockchip/r
+ enabled libvmaf           && require_pkg_config libvmaf "libvmaf >= 1.3.9" libvmaf.h compute_vmaf
+@@ -6365,6 +6371,10 @@ enabled rkmpp             && { require_pkg_config rkmpp rockchip_mpp  rockchip/r
                                 { enabled libdrm ||
                                   die "ERROR: rkmpp requires --enable-libdrm"; }
                               }
@@ -74,23 +74,23 @@ index 15e6c321b1..7f9e7e7b25 100755
 +                               die "ERROR: v4l2-request requires --enable-libdrm"; } &&
 +                             { enabled libudev ||
 +                               die "ERROR: v4l2-request requires --enable-libudev"; }
+ enabled vapoursynth       && require_pkg_config vapoursynth "vapoursynth-script >= 42" VSScript.h vsscript_init
  
- if enabled gcrypt; then
-     GCRYPT_CONFIG="${cross_prefix}libgcrypt-config"
-@@ -6230,6 +6240,8 @@ check_cc h264_v4l2_m2m linux/videodev2.h "int i = V4L2_PIX_FMT_H264;"
+ 
+@@ -6444,6 +6454,8 @@ check_cc h264_v4l2_m2m linux/videodev2.h "int i = V4L2_PIX_FMT_H264;"
  check_cc vp8_v4l2_m2m linux/videodev2.h "int i = V4L2_PIX_FMT_VP8;"
  check_cc vp9_v4l2_m2m linux/videodev2.h "int i = V4L2_PIX_FMT_VP9;"
  
 +check_func_headers "linux/media.h linux/videodev2.h" v4l2_timeval_to_ns
 +
- check_header sys/videoio.h
+ check_headers sys/videoio.h
  test_code cc sys/videoio.h "struct v4l2_frmsizeenum vfse; vfse.discrete.width = 0;" && enable_sanitized struct_v4l2_frmivalenum_discrete
  
 diff --git a/libavcodec/Makefile b/libavcodec/Makefile
-index 4b8ad121db..48f6e06545 100644
+index 3cd73fbcc6..9e847eeadc 100644
 --- a/libavcodec/Makefile
 +++ b/libavcodec/Makefile
-@@ -143,6 +143,7 @@ OBJS-$(CONFIG_VP3DSP)                  += vp3dsp.o
+@@ -147,6 +147,7 @@ OBJS-$(CONFIG_VP3DSP)                  += vp3dsp.o
  OBJS-$(CONFIG_VP56DSP)                 += vp56dsp.o
  OBJS-$(CONFIG_VP8DSP)                  += vp8dsp.o
  OBJS-$(CONFIG_V4L2_M2M)                += v4l2_m2m.o v4l2_context.o v4l2_buffers.o v4l2_fmt.o
@@ -112,10 +112,10 @@ index 3aaa92571c..2eefc91e7e 100644
  #endif /* AVCODEC_HWACCEL_H */
 diff --git a/libavcodec/v4l2_request.c b/libavcodec/v4l2_request.c
 new file mode 100644
-index 0000000000..bf9d049eff
+index 0000000000..1dabf77689
 --- /dev/null
 +++ b/libavcodec/v4l2_request.c
-@@ -0,0 +1,919 @@
+@@ -0,0 +1,943 @@
 +/*
 + * This file is part of FFmpeg.
 + *
@@ -216,7 +216,7 @@ index 0000000000..bf9d049eff
 +    return control.default_value;
 +}
 +
-+static int v4l2_request_queue_buffer(V4L2RequestContext *ctx, int request_fd, V4L2RequestBuffer *buf)
++static int v4l2_request_queue_buffer(V4L2RequestContext *ctx, int request_fd, V4L2RequestBuffer *buf, uint32_t flags)
 +{
 +    struct v4l2_plane planes[1] = {};
 +    struct v4l2_buffer buffer = {
@@ -226,7 +226,7 @@ index 0000000000..bf9d049eff
 +        .timestamp.tv_usec = buf->index + 1,
 +        .bytesused = buf->used,
 +        .request_fd = request_fd,
-+        .flags = (request_fd >= 0) ? V4L2_BUF_FLAG_REQUEST_FD : 0,
++        .flags = ((request_fd >= 0) ? V4L2_BUF_FLAG_REQUEST_FD : 0) | flags,
 +    };
 +
 +    if (V4L2_TYPE_IS_MULTIPLANAR(buf->buffer.type)) {
@@ -308,7 +308,7 @@ index 0000000000..bf9d049eff
 +    return 0;
 +}
 +
-+int ff_v4l2_request_decode_frame(AVCodecContext *avctx, AVFrame *frame, struct v4l2_ext_control *control, int count)
++static int v4l2_request_queue_decode(AVCodecContext *avctx, AVFrame *frame, struct v4l2_ext_control *control, int count, int first_slice, int last_slice)
 +{
 +    V4L2RequestContext *ctx = avctx->internal->hwaccel_priv_data;
 +    V4L2RequestDescriptor *req = (V4L2RequestDescriptor*)frame->data[0];
@@ -316,7 +316,7 @@ index 0000000000..bf9d049eff
 +    fd_set except_fds;
 +    int ret;
 +
-+    av_log(avctx, AV_LOG_DEBUG, "%s: avctx=%p used=%u controls=%d index=%d fd=%d request_fd=%d\n", __func__, avctx, req->output.used, count, req->capture.index, req->capture.fd, req->request_fd);
++    av_log(avctx, AV_LOG_DEBUG, "%s: avctx=%p used=%u controls=%d index=%d fd=%d request_fd=%d first_slice=%d last_slice=%d\n", __func__, avctx, req->output.used, count, req->capture.index, req->capture.fd, req->request_fd, first_slice, last_slice);
 +
 +    ret = v4l2_request_set_controls(ctx, req->request_fd, control, count);
 +    if (ret < 0) {
@@ -326,16 +326,18 @@ index 0000000000..bf9d049eff
 +
 +    memset(req->output.addr + req->output.used, 0, AV_INPUT_BUFFER_PADDING_SIZE);
 +
-+    ret = v4l2_request_queue_buffer(ctx, req->request_fd, &req->output);
++    ret = v4l2_request_queue_buffer(ctx, req->request_fd, &req->output, last_slice ? 0 : V4L2_BUF_FLAG_M2M_HOLD_CAPTURE_BUF);
 +    if (ret < 0) {
 +        av_log(avctx, AV_LOG_ERROR, "%s: queue output buffer %d failed for request %d, %s (%d)\n", __func__, req->output.index, req->request_fd, strerror(errno), errno);
 +        return -1;
 +    }
 +
-+    ret = v4l2_request_queue_buffer(ctx, -1, &req->capture);
-+    if (ret < 0) {
-+        av_log(avctx, AV_LOG_ERROR, "%s: queue capture buffer %d failed for request %d, %s (%d)\n", __func__, req->capture.index, req->request_fd, strerror(errno), errno);
-+        return -1;
++    if (first_slice) {
++        ret = v4l2_request_queue_buffer(ctx, -1, &req->capture, 0);
++        if (ret < 0) {
++            av_log(avctx, AV_LOG_ERROR, "%s: queue capture buffer %d failed for request %d, %s (%d)\n", __func__, req->capture.index, req->request_fd, strerror(errno), errno);
++            return -1;
++        }
 +    }
 +
 +    // NOTE: do we need to dequeue when request fails/timeout?
@@ -365,10 +367,12 @@ index 0000000000..bf9d049eff
 +        return -1;
 +    }
 +
-+    ret = v4l2_request_dequeue_buffer(ctx, &req->capture);
-+    if (ret < 0) {
-+        av_log(avctx, AV_LOG_ERROR, "%s: dequeue capture buffer %d failed for request %d, %s (%d)\n", __func__, req->capture.index, req->request_fd, strerror(errno), errno);
-+        return -1;
++    if (last_slice) {
++        ret = v4l2_request_dequeue_buffer(ctx, &req->capture);
++        if (ret < 0) {
++            av_log(avctx, AV_LOG_ERROR, "%s: dequeue capture buffer %d failed for request %d, %s (%d)\n", __func__, req->capture.index, req->request_fd, strerror(errno), errno);
++            return -1;
++        }
 +    }
 +
 +    // TODO: check errors
@@ -380,7 +384,10 @@ index 0000000000..bf9d049eff
 +        return -1;
 +    }
 +
-+    return v4l2_request_set_drm_descriptor(req, &ctx->format);
++    if (last_slice)
++        return v4l2_request_set_drm_descriptor(req, &ctx->format);
++
++    return 0;
 +
 +fail:
 +    ret = v4l2_request_dequeue_buffer(ctx, &req->output);
@@ -396,6 +403,22 @@ index 0000000000..bf9d049eff
 +        av_log(avctx, AV_LOG_ERROR, "%s: reinit request %d failed, %s (%d)\n", __func__, req->request_fd, strerror(errno), errno);
 +
 +    return -1;
++}
++
++int ff_v4l2_request_decode_slice(AVCodecContext *avctx, AVFrame *frame, struct v4l2_ext_control *control, int count, int first_slice, int last_slice)
++{
++    V4L2RequestDescriptor *req = (V4L2RequestDescriptor*)frame->data[0];
++
++    // fall back to queue each slice as a full frame
++    if ((req->output.capabilities & V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF) != V4L2_BUF_CAP_SUPPORTS_M2M_HOLD_CAPTURE_BUF)
++        return v4l2_request_queue_decode(avctx, frame, control, count, 1, 1);
++
++    return v4l2_request_queue_decode(avctx, frame, control, count, first_slice, last_slice);
++}
++
++int ff_v4l2_request_decode_frame(AVCodecContext *avctx, AVFrame *frame, struct v4l2_ext_control *control, int count)
++{
++    return v4l2_request_queue_decode(avctx, frame, control, count, 1, 1);
 +}
 +
 +static int v4l2_request_try_format(AVCodecContext *avctx, enum v4l2_buf_type type, uint32_t pixelformat)
@@ -866,6 +889,7 @@ index 0000000000..bf9d049eff
 +    }
 +
 +    buf->index = buffers.index;
++    buf->capabilities = buffers.capabilities;
 +    buf->used = 0;
 +
 +    buf->buffer.type = type;
@@ -1037,10 +1061,10 @@ index 0000000000..bf9d049eff
 +}
 diff --git a/libavcodec/v4l2_request.h b/libavcodec/v4l2_request.h
 new file mode 100644
-index 0000000000..1f45772d8b
+index 0000000000..d4146bd4ee
 --- /dev/null
 +++ b/libavcodec/v4l2_request.h
-@@ -0,0 +1,69 @@
+@@ -0,0 +1,72 @@
 +/*
 + * This file is part of FFmpeg.
 + *
@@ -1081,6 +1105,7 @@ index 0000000000..1f45772d8b
 +    uint32_t height;
 +    uint32_t size;
 +    uint32_t used;
++    uint32_t capabilities;
 +    struct v4l2_buffer buffer;
 +} V4L2RequestBuffer;
 +
@@ -1100,6 +1125,8 @@ index 0000000000..1f45772d8b
 +int ff_v4l2_request_set_controls(AVCodecContext *avctx, struct v4l2_ext_control *control, int count);
 +
 +int ff_v4l2_request_query_control_default_value(AVCodecContext *avctx, uint32_t id);
++
++int ff_v4l2_request_decode_slice(AVCodecContext *avctx, AVFrame *frame, struct v4l2_ext_control *control, int count, int first_slice, int last_slice);
 +
 +int ff_v4l2_request_decode_frame(AVCodecContext *avctx, AVFrame *frame, struct v4l2_ext_control *control, int count);
 +

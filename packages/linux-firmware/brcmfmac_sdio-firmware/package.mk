@@ -2,8 +2,8 @@
 # Copyright (C) 2019-present Team LibreELEC (https://libreelec.tv)
 
 PKG_NAME="brcmfmac_sdio-firmware"
-PKG_VERSION="79932201f7827ec06ec708a44bf583a772ae7522"
-PKG_SHA256="b31665e3b0dfd595234241ef233e47f2e12312ce019c9b5c2e02919d0b2ddbc0"
+PKG_VERSION="428ee70f59671a5c620466e8be1d320a66c1bf8b"
+PKG_SHA256="6b61755d8735053d00c67c158af4d931d88fd7c4c18413830309e92c44f4b295"
 PKG_LICENSE="GPL"
 PKG_SITE="https://github.com/LibreELEC/brcmfmac_sdio-firmware"
 PKG_URL="https://github.com/LibreELEC/brcmfmac_sdio-firmware/archive/$PKG_VERSION.tar.gz"
