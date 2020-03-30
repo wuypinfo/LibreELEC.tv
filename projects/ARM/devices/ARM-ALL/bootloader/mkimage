@@ -102,11 +102,11 @@ case "${UBOOT_SYSTEM}" in
     mkimage_autoscripts
     mkimage_boot-ini
     ;;
-  odroid-c2)
+  odroid-c2|nanopi-k2)
     mkimage_uboot
     mkimage_autoscripts-c2
     ;;
-  wetek-play2)
+  amlgxbb)
     mkimage_uboot
     mkimage_autoscripts
     ;;

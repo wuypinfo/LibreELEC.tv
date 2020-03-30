@@ -4,6 +4,15 @@
 mkdir -p "$RELEASE_DIR/3rdparty/bootloader"
   cp -a $(get_build_dir u-boot-script)/* $RELEASE_DIR/3rdparty/bootloader
 
+mkdir -p "$RELEASE_DIR/3rdparty/bootloader/dtb/rockchip"
+cp -a $(get_build_dir linux)/arch/$TARGET_KERNEL_ARCH/boot/dts/rockchip/*.dtb $RELEASE_DIR/3rdparty/bootloader/dtb/rockchip
+
+mkdir -p "$RELEASE_DIR/3rdparty/bootloader/dtb/amlogic"
+cp -a $(get_build_dir linux)/arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/*.dtb $RELEASE_DIR/3rdparty/bootloader/dtb/amlogic
+
+mkdir -p "$RELEASE_DIR/3rdparty/bootloader/dtb/allwinner"
+cp -a $(get_build_dir linux)/arch/$TARGET_KERNEL_ARCH/boot/dts/allwinner/*.dtb $RELEASE_DIR/3rdparty/bootloader/dtb/allwinner
+
 if [ "$PLATFORM" = "RK" ]; then
 
 INSTBOOT_DIR=$RELEASE_DIR/3rdparty/bootloader/u-boot
@@ -21,45 +30,17 @@ mkdir -p $INSTBOOT_DIR
     fi
   fi
 
-mkdir -p "$RELEASE_DIR/3rdparty/bootloader/dtb/rockchip"
-cp -a $(get_build_dir linux)/arch/$TARGET_KERNEL_ARCH/boot/dts/rockchip/*.dtb $RELEASE_DIR/3rdparty/bootloader/dtb/rockchip
-
-#LINUX_DTS_DIR=$(get_build_dir linux)/arch/$TARGET_KERNEL_ARCH/boot/dts
-#  for dtb in $LINUX_DTS_DIR/rockchip/*.dtb; do
-#    if [ -f $dtb ]; then
-#      cp -a $dtb $RELEASE_DIR/3rdparty/bootloader/dtb/rockchip
-#    fi
-#  done
-
-#  for file_sh in $INSTALL/instboot/*.sh; do
-#    if [ -f $file_sh ]; then
-#      cp -a $file_sh $RELEASE_DIR/3rdparty/bootloader
-#    fi
-#  done
-
-
 elif [ "$PLATFORM" = "AML" ]; then
 
   if find_file_path bootloader/${UBOOT_SYSTEM}.ini; then
     cp -av ${FOUND_PATH} $RELEASE_DIR/3rdparty/bootloader/boot.ini
   fi
-
-mkdir -p "$RELEASE_DIR/3rdparty/bootloader/dtb/amlogic"
-#  if [ "${UBOOT_SYSTEM}" = "amlg12" ]; then
-      cp -a $(get_build_dir linux)/arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/*g12a*.dtb $RELEASE_DIR/3rdparty/bootloader/dtb/amlogic
-      cp -a $(get_build_dir linux)/arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/*g12b*.dtb $RELEASE_DIR/3rdparty/bootloader/dtb/amlogic
-      cp -a $(get_build_dir linux)/arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/*sm1*.dtb $RELEASE_DIR/3rdparty/bootloader/dtb/amlogic
-      if find_file_path bootloader/u-boot.sd; then
-        cp -av ${FOUND_PATH} $RELEASE_DIR/3rdparty/bootloader/u-boot.sd
-      fi
-      if find_file_path bootloader/u-boot.usb; then
-        cp -av ${FOUND_PATH} $RELEASE_DIR/3rdparty/bootloader/u-boot.usb
-      fi
-#  else
-      cp -a $(get_build_dir linux)/arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/*gxbb*.dtb $RELEASE_DIR/3rdparty/bootloader/dtb/amlogic
-      cp -a $(get_build_dir linux)/arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/*gxl*.dtb $RELEASE_DIR/3rdparty/bootloader/dtb/amlogic
-      cp -a $(get_build_dir linux)/arch/$TARGET_KERNEL_ARCH/boot/dts/amlogic/*gxm*.dtb $RELEASE_DIR/3rdparty/bootloader/dtb/amlogic
-#  fi
+  if find_file_path bootloader/u-boot.sd; then
+    cp -av ${FOUND_PATH} $RELEASE_DIR/3rdparty/bootloader/u-boot.sd
+  fi
+  if find_file_path bootloader/u-boot.usb; then
+    cp -av ${FOUND_PATH} $RELEASE_DIR/3rdparty/bootloader/u-boot.usb
+  fi
 
 elif [ "$PLATFORM" = "AW" ]; then
 
@@ -72,15 +53,4 @@ mkdir -p $INSTBOOT_DIR
     fi
   fi
 
-mkdir -p "$RELEASE_DIR/3rdparty/bootloader/dtb/allwinner"
-cp -a $(get_build_dir linux)/arch/$TARGET_KERNEL_ARCH/boot/dts/allwinner/*.dtb $RELEASE_DIR/3rdparty/bootloader/dtb/allwinner
-
-#  for file_sh in $INSTALL/instboot/*.sh; do
-#    if [ -f $file_sh ]; then
-#      cp -a $file_sh $RELEASE_DIR/3rdparty/bootloader
-#    fi
-#  done
-
-#  cp -a $(get_build_dir linux)/arch/$TARGET_KERNEL_ARCH/boot/dts/allwinner/sun50i-h6-*.dtb $RELEASE_DIR/3rdparty/bootloader
-   
 fi

@@ -28,34 +28,6 @@
 mv $BOOT_ROOT/dtb $BOOT_ROOT/dtb_old
 cp -R $UPDATE_DIR/.tmp/*/3rdparty/bootloader/dtb $BOOT_ROOT
 
-#  if [ -f $BOOT_ROOT/s905_autoscript ]; then
-#      echo "Updating s905_autoscript"
-#      cp -p $SYSTEM_ROOT/usr/share/bootloader/s905_autoscript $BOOT_ROOT 2>/dev/null || true
-#  fi
-
-#  if [ -f $BOOT_ROOT/emmc_autoscript ]; then
-#      echo "Updating emmc_autoscript"
-#      cp -p $SYSTEM_ROOT/usr/share/bootloader/emmc_autoscript $BOOT_ROOT 2>/dev/null || true
-#  fi
-
-# update u-boot scripts
-#  if [ -f $BOOT_ROOT/boot.scr ]; then
-#      echo "Updating boot.scr"
-#      cp -p $SYSTEM_ROOT/usr/share/bootloader/boot.scr $BOOT_ROOT 2>/dev/null || true
-#  fi
-
-#  if [ -f $BOOT_ROOT/install2emmc.sh ]; then
-#    for scriptfile in $SYSTEM_ROOT/usr/share/bootloader/*.sh ; do
-#      echo "Updating $(basename $scriptfile)"
-#      cp -p $scriptfile $BOOT_ROOT 2>/dev/null || true
-#    done
-#  fi
-
-#  if [ -f $BOOT_ROOT/u-boot.ext ]; then
-#      echo "Updating u-boot.ext"
-#      cp -p $SYSTEM_ROOT/usr/share/bootloader/u-boot.ext $BOOT_ROOT 2>/dev/null || true
-#  fi
-
 # mount $BOOT_ROOT ro
   sync
   mount -o remount,ro $BOOT_ROOT
