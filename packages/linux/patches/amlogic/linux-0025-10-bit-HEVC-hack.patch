@@ -33,21 +33,6 @@ index 97dce6ffbbc5..d866662cd5a5 100644
  	/* PPS. */
  
  	reg = VE_DEC_H265_DEC_PPS_CTRL0_PPS_CR_QP_OFFSET(pps->pps_cr_qp_offset) |
-diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_regs.h b/drivers/staging/media/sunxi/cedrus/cedrus_regs.h
-index df1cceef8d93..150eae2d92d2 100644
---- a/drivers/staging/media/sunxi/cedrus/cedrus_regs.h
-+++ b/drivers/staging/media/sunxi/cedrus/cedrus_regs.h
-@@ -498,6 +498,10 @@
- 
- #define VE_DEC_H265_LOW_ADDR			(VE_ENGINE_DEC_H265 + 0x80)
- 
-+#define VE_DEC_H265_OFFSET_ADDR_FIRST_OUT	(VE_ENGINE_DEC_H265 + 0x84)
-+#define VE_DEC_H265_OFFSET_ADDR_SECOND_OUT	(VE_ENGINE_DEC_H265 + 0x88)
-+#define VE_DEC_H265_10BIT_CONFIGURE		(VE_ENGINE_DEC_H265 + 0x8c)
-+
- #define VE_DEC_H265_LOW_ADDR_PRIMARY_CHROMA(a) \
- 	SHIFT_AND_MASK_BITS(a, 31, 24)
- #define VE_DEC_H265_LOW_ADDR_SECONDARY_CHROMA(a) \
 diff --git a/drivers/staging/media/sunxi/cedrus/cedrus_video.c b/drivers/staging/media/sunxi/cedrus/cedrus_video.c
 index 497b1199d3fe..178ad45b79d8 100644
 --- a/drivers/staging/media/sunxi/cedrus/cedrus_video.c
