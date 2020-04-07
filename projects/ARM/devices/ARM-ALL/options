@@ -66,7 +66,11 @@
         DEBUG_TTY="/dev/ttyAML0"
     elif [ "$PLATFORM" = "AW" ]; then
 	UBOOT_FIRMWARE="atf"
-	ATF_PLATFORM="sun50i_h6"
+        if [ "${UBOOT_SYSTEM}" = "h5" ]; then
+		ATF_PLATFORM="sun50i_a64"
+	else
+		ATF_PLATFORM="sun50i_h6"
+	fi
         EXTRA_CMDLINE="console=ttyS0,115200 console=tty1 systemd.debug_shell=ttyS0"
 	DEBUG_TTY="/dev/console"
     fi
@@ -146,7 +150,7 @@
   # for a list of additional drivers see packages/linux-drivers
   # Space separated list is supported,
   # e.g. ADDITIONAL_DRIVERS="DRIVER1 DRIVER2"
-    ADDITIONAL_DRIVERS="RTL8192CU RTL8192EU RTL8188EU"
+#    ADDITIONAL_DRIVERS="RTL8192CU RTL8192EU RTL8188EU"
 
   # build and install driver addons (yes / no)
     DRIVER_ADDONS_SUPPORT="yes"

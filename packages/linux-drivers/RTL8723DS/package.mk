@@ -1,17 +1,19 @@
 # SPDX-License-Identifier: GPL-2.0
-# Copyright (C) 2018-present Team LibreELEC (https://libreelec.tv)
+# Copyright (C) 2020-present Team LibreELEC (https://libreelec.tv)
 
-PKG_NAME="RTL8189FS"
-PKG_VERSION="rtl8189fs"
+PKG_NAME="RTL8723DS"
+PKG_VERSION="master"
 PKG_SHA256=""
 PKG_LICENSE="GPL"
-PKG_SITE="https://github.com/jwrdegoede/rtl8189ES_linux"
-PKG_URL="https://github.com/jwrdegoede/rtl8189ES_linux/archive/$PKG_VERSION.tar.gz"
-PKG_LONGDESC="Realtek RTL8189FS Linux driver"
+PKG_SITE="https://github.com/igorpecovnik/rtl8723ds"
+PKG_URL="https://github.com/igorpecovnik/rtl8723ds/archive/$PKG_VERSION.tar.gz"
+PKG_LONGDESC="Realtek RTL8723DS Linux driver"
 PKG_IS_KERNEL_PKG="yes"
+#PKG_TOOLCHAIN="make"
 
 pre_make_target() {
   unset LDFLAGS
+#  pwd
 }
 
 make_target() {
