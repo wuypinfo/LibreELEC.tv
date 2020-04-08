@@ -52,7 +52,7 @@ if [ -n "$PKG_DATAFILE" -a -n "$PKG_LOADER" ]; then
 fi
 
 if [ -n "$PKG_LOAD_ADDR" ]; then
-  $PKG_RKBIN/tools/loaderimage --pack --uboot u-boot-dtb.bin uboot.img $PKG_LOAD_ADDR
+  qemu-x86_64 $PKG_RKBIN/tools/loaderimage --pack --uboot u-boot-dtb.bin uboot.img $PKG_LOAD_ADDR
   cp -av uboot.img $INSTALL_UBOOT
 fi
 
@@ -71,7 +71,7 @@ SEC=0
 [OUTPUT]
 PATH=trust.img
 EOF
-  $PKG_RKBIN/tools/trust_merger --verbose trust.ini
+  qemu-x86_64 $PKG_RKBIN/tools/trust_merger --verbose trust.ini
   cp -av trust.img $INSTALL_UBOOT
 fi
 
@@ -126,21 +126,21 @@ case "${UBOOT_SYSTEM}" in
                        $DESTDIR/bl21_zero.bin \
                        $DESTDIR/bl2_new.bin bl2
 
-    $FIPDIR/$AML_ENCRYPT_BIN --bl30sig --input $DESTDIR/bl30_new.bin \
+    qemu-x86_64 $FIPDIR/$AML_ENCRYPT_BIN --bl30sig --input $DESTDIR/bl30_new.bin \
                                        --output $DESTDIR/bl30_new.bin.g12a.enc \
                                        --level v3
-    $FIPDIR/$AML_ENCRYPT_BIN --bl3sig  --input $DESTDIR/bl30_new.bin.g12a.enc \
+    qemu-x86_64 $FIPDIR/$AML_ENCRYPT_BIN --bl3sig  --input $DESTDIR/bl30_new.bin.g12a.enc \
                                        --output $DESTDIR/bl30_new.bin.enc \
                                        --level v3 --type bl30
-    $FIPDIR/$AML_ENCRYPT_BIN --bl3sig  --input $DESTDIR/bl31.img \
+    qemu-x86_64 $FIPDIR/$AML_ENCRYPT_BIN --bl3sig  --input $DESTDIR/bl31.img \
                                        --output $DESTDIR/bl31.img.enc \
                                        --level v3 --type bl31
-    $FIPDIR/$AML_ENCRYPT_BIN --bl3sig  --input $DESTDIR/bl33.bin --compress lz4 \
+    qemu-x86_64 $FIPDIR/$AML_ENCRYPT_BIN --bl3sig  --input $DESTDIR/bl33.bin --compress lz4 \
                                        --output $DESTDIR/bl33.bin.enc \
                                        --level v3 --type bl33 --compress lz4
-    $FIPDIR/$AML_ENCRYPT_BIN --bl2sig  --input $DESTDIR/bl2_new.bin \
+    qemu-x86_64 $FIPDIR/$AML_ENCRYPT_BIN --bl2sig  --input $DESTDIR/bl2_new.bin \
                                        --output $DESTDIR/bl2.n.bin.sig
-    $FIPDIR/$AML_ENCRYPT_BIN --bootmk \
+    qemu-x86_64 $FIPDIR/$AML_ENCRYPT_BIN --bootmk \
                              --output $DESTDIR/u-boot.bin \
                              --bl2 $DESTDIR/bl2.n.bin.sig \
                              --bl30 $DESTDIR/bl30_new.bin.enc \
@@ -159,16 +159,16 @@ case "${UBOOT_SYSTEM}" in
     ;;
 
   odroid-c2)
-    $FIPDIR/fip_create --bl30 $FIPDIR/bl30.bin \
+    qemu-x86_64 $FIPDIR/fip_create --bl30 $FIPDIR/bl30.bin \
                        --bl301 $FIPDIR/bl301.bin \
                        --bl31 $FIPDIR/bl31.bin \
                        --bl33 $(get_build_dir $BOOTLOADER)/u-boot.bin $DESTDIR/fip.bin
 
-    $FIPDIR/fip_create --dump $DESTDIR/fip.bin
+    qemu-x86_64 $FIPDIR/fip_create --dump $DESTDIR/fip.bin
 
     cat $FIPDIR/bl2.package $DESTDIR/fip.bin > $DESTDIR/boot_new.bin
 
-    $FIPDIR/aml_encrypt_gxb --bootsig --input $DESTDIR/boot_new.bin --output $DESTDIR/u-boot.img
+    qemu-x86_64 $FIPDIR/aml_encrypt_gxb --bootsig --input $DESTDIR/boot_new.bin --output $DESTDIR/u-boot.img
     dd if=$DESTDIR/u-boot.img of=$DESTDIR/u-boot.gxbb bs=512 skip=96
     dd if=$FIPDIR/bl1.bin.hardkernel of=$DESTDIR/u-boot.bin.sd.bin conv=fsync,notrunc bs=1 count=442
     dd if=$FIPDIR/bl1.bin.hardkernel of=$DESTDIR/u-boot.bin.sd.bin conv=fsync,notrunc bs=512 skip=1 seek=1
@@ -207,21 +207,21 @@ case "${UBOOT_SYSTEM}" in
                        $DESTDIR/bl21_zero.bin \
                        $DESTDIR/bl2_new.bin bl2
 
-    $FIPDIR/aml_encrypt_g12b --bl30sig --input $DESTDIR/bl30_new.bin \
+    qemu-x86_64 $FIPDIR/aml_encrypt_g12b --bl30sig --input $DESTDIR/bl30_new.bin \
                                        --output $DESTDIR/bl30_new.bin.g12a.enc \
                                        --level v3
-    $FIPDIR/aml_encrypt_g12b --bl3sig  --input $DESTDIR/bl30_new.bin.g12a.enc \
+    qemu-x86_64 $FIPDIR/aml_encrypt_g12b --bl3sig  --input $DESTDIR/bl30_new.bin.g12a.enc \
                                        --output $DESTDIR/bl30_new.bin.enc \
                                        --level v3 --type bl30
-    $FIPDIR/aml_encrypt_g12b --bl3sig  --input $DESTDIR/bl31.img \
+    qemu-x86_64 $FIPDIR/aml_encrypt_g12b --bl3sig  --input $DESTDIR/bl31.img \
                                        --output $DESTDIR/bl31.img.enc \
                                        --level v3 --type bl31
-    $FIPDIR/aml_encrypt_g12b --bl3sig  --input $DESTDIR/bl33.bin --compress lz4 \
+    qemu-x86_64 $FIPDIR/aml_encrypt_g12b --bl3sig  --input $DESTDIR/bl33.bin --compress lz4 \
                                        --output $DESTDIR/bl33.bin.enc \
                                        --level v3 --type bl33 --compress lz4
-    $FIPDIR/aml_encrypt_g12b --bl2sig  --input $DESTDIR/bl2_new.bin \
+    qemu-x86_64 $FIPDIR/aml_encrypt_g12b --bl2sig  --input $DESTDIR/bl2_new.bin \
                                        --output $DESTDIR/bl2.n.bin.sig
-    $FIPDIR/aml_encrypt_g12b --bootmk \
+    qemu-x86_64 $FIPDIR/aml_encrypt_g12b --bootmk \
                              --output $DESTDIR/u-boot.bin \
                              --bl2 $DESTDIR/bl2.n.bin.sig \
                              --bl30 $DESTDIR/bl30_new.bin.enc \
@@ -254,12 +254,12 @@ case "${UBOOT_SYSTEM}" in
                        $DESTDIR/bl301_zero.bin \
                        $DESTDIR/bl30_new.bin bl30
 
-    $FIPDIR/fip_create --bl30 $DESTDIR/bl30_new.bin \
+    qemu-x86_64 $FIPDIR/fip_create --bl30 $DESTDIR/bl30_new.bin \
                        --bl31 $DESTDIR/bl31.img \
                        --bl33 $DESTDIR/bl33.bin \
                               $DESTDIR/fip.bin
 
-    $FIPDIR/fip_create --dump $DESTDIR/fip.bin
+    qemu-x86_64 $FIPDIR/fip_create --dump $DESTDIR/fip.bin
 
     python3 $FIPDIR/acs_tool.py $DESTDIR/bl2.bin \
                                 $DESTDIR/bl2_acs.bin \
@@ -274,7 +274,7 @@ case "${UBOOT_SYSTEM}" in
 
     cat $DESTDIR/bl2_new.bin $DESTDIR/fip.bin > $DESTDIR/boot_new.bin
 
-    $FIPDIR/aml_encrypt_gxb --bootsig --input $DESTDIR/boot_new.bin --output $DESTDIR/u-boot.bin
+    qemu-x86_64 $FIPDIR/aml_encrypt_gxb --bootsig --input $DESTDIR/boot_new.bin --output $DESTDIR/u-boot.bin
     ;;
 
   amlgxbb)
@@ -294,12 +294,12 @@ case "${UBOOT_SYSTEM}" in
                        $DESTDIR/bl301_zero.bin \
                        $DESTDIR/bl30_new.bin bl30
 
-    $FIPDIR/fip_create --bl30 $DESTDIR/bl30_new.bin \
+    qemu-x86_64 $FIPDIR/fip_create --bl30 $DESTDIR/bl30_new.bin \
                        --bl31 $DESTDIR/bl31.img \
                        --bl33 $DESTDIR/bl33.bin \
                               $DESTDIR/fip.bin
 
-    $FIPDIR/fip_create --dump $DESTDIR/fip.bin
+    qemu-x86_64 $FIPDIR/fip_create --dump $DESTDIR/fip.bin
 
     python3 $FIPDIR/acs_tool.py $DESTDIR/bl2.bin \
                                 $DESTDIR/bl2_acs.bin \
@@ -314,7 +314,7 @@ case "${UBOOT_SYSTEM}" in
 
     cat $DESTDIR/bl2_new.bin $DESTDIR/fip.bin > $DESTDIR/boot_new.bin
 
-    $FIPDIR/aml_encrypt_gxb --bootsig --input $DESTDIR/boot_new.bin --output $DESTDIR/u-boot.bin
+    qemu-x86_64 $FIPDIR/aml_encrypt_gxb --bootsig --input $DESTDIR/boot_new.bin --output $DESTDIR/u-boot.bin
     ;;
 
   *) # GXL/GXM
@@ -343,11 +343,11 @@ case "${UBOOT_SYSTEM}" in
                        $DESTDIR/bl21_zero.bin \
                        $DESTDIR/bl2_new.bin bl2
 
-    $FIPDIR/aml_encrypt_gxl --bl3enc --input $DESTDIR/bl30_new.bin
-    $FIPDIR/aml_encrypt_gxl --bl3enc --input $DESTDIR/bl31.img
-    $FIPDIR/aml_encrypt_gxl --bl3enc --input $DESTDIR/bl33.bin
-    $FIPDIR/aml_encrypt_gxl --bl2sig --input $DESTDIR/bl2_new.bin --output $DESTDIR/bl2.n.bin.sig
-    $FIPDIR/aml_encrypt_gxl --bootmk --output $DESTDIR/u-boot.bin --bl2 $DESTDIR/bl2.n.bin.sig --bl30 $DESTDIR/bl30_new.bin.enc --bl31 $DESTDIR/bl31.img.enc --bl33 $DESTDIR/bl33.bin.enc
+    qemu-x86_64 $FIPDIR/aml_encrypt_gxl --bl3enc --input $DESTDIR/bl30_new.bin
+    qemu-x86_64 $FIPDIR/aml_encrypt_gxl --bl3enc --input $DESTDIR/bl31.img
+    qemu-x86_64 $FIPDIR/aml_encrypt_gxl --bl3enc --input $DESTDIR/bl33.bin
+    qemu-x86_64 $FIPDIR/aml_encrypt_gxl --bl2sig --input $DESTDIR/bl2_new.bin --output $DESTDIR/bl2.n.bin.sig
+    qemu-x86_64 $FIPDIR/aml_encrypt_gxl --bootmk --output $DESTDIR/u-boot.bin --bl2 $DESTDIR/bl2.n.bin.sig --bl30 $DESTDIR/bl30_new.bin.enc --bl31 $DESTDIR/bl31.img.enc --bl33 $DESTDIR/bl33.bin.enc
     ;;
 
 esac
