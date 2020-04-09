@@ -22,13 +22,9 @@ if [ "$MEDIACENTER" = "kodi" ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET texturecache.py"
 
 # some python stuff needed for various addons
-if [ "$TARGET_ARCH" = "arm" ]; then
   PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET Pillow \
                                           simplejson \
                                           pycryptodome"
-else
-  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET simplejson"
-fi
 
 # settings addon
   if [ -n "$DISTRO_PKG_SETTINGS" ]; then
