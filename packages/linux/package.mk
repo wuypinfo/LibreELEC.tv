@@ -16,7 +16,7 @@ PKG_PATCH_DIRS="$LINUX"
 
 case "$LINUX" in
   amlogic)
-    PKG_VERSION="5.6.2"
+    PKG_VERSION="5.6.3"
     PKG_SHA256=""
     PKG_URL="https://www.kernel.org/pub/linux/kernel/v5.x/$PKG_NAME-$PKG_VERSION.tar.xz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"

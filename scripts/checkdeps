@@ -130,7 +130,7 @@ if [ "$(uname -m)" = "aarch64" ]; then
   files+=(/lib64/ld-linux-x86-64.so.2 /lib/x86_64-linux-gnu/libc.so.6)
   files_pkg+=(libc6:amd64 libc6:amd64)
   deps+=(qemu-x86_64)
-  deps_pkg+=(qemu-user-binfmt)
+  deps_pkg+=(qemu)
 fi
 
 get_deps
