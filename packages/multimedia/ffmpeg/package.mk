@@ -17,11 +17,6 @@ PKG_BUILD_FLAGS="-gold"
 get_graphicdrivers
 
 if [ "${V4L2_SUPPORT}" = "yes" ]; then
-#PKG_VERSION="d033f403d67bedfd35d39a37561ef7af98f5a080" # Yukawa
-#PKG_SHA256=""
-#PKG_URL="https://github.com/FFmpeg/FFmpeg/archive/${PKG_VERSION}.tar.gz"
-#PKG_PATCH_DIRS+=" yukawa"
-
   PKG_DEPENDS_TARGET+=" libdrm"
   PKG_NEED_UNPACK+=" $(get_pkg_directory libdrm)"
   PKG_PATCH_DIRS+=" v4l2"
