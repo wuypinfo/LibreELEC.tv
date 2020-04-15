@@ -291,6 +291,7 @@ case "${UBOOT_SYSTEM}" in
     cp $FIPDIR/bl30.bin $DESTDIR/
     cp $FIPDIR/bl301.bin $DESTDIR/
     cp $FIPDIR/bl31.img $DESTDIR/
+    cp $FIPDIR/bl32.img $DESTDIR/
     cp $(get_build_dir $BOOTLOADER)/u-boot.bin $DESTDIR/bl33.bin
 
     $FIPDIR/blx_fix.sh $DESTDIR/bl30.bin \
@@ -302,6 +303,7 @@ case "${UBOOT_SYSTEM}" in
 
     $PKG_PREFIX$FIPDIR/fip_create --bl30 $DESTDIR/bl30_new.bin \
                        --bl31 $DESTDIR/bl31.img \
+                       --bl32 $DESTDIR/bl32.img \
                        --bl33 $DESTDIR/bl33.bin \
                               $DESTDIR/fip.bin
 

@@ -16,11 +16,18 @@ PKG_PATCH_DIRS="$LINUX"
 
 case "$LINUX" in
   amlogic)
-    PKG_VERSION="5.6.3"
+    PKG_VERSION="8f3d9f354286745c751374f5f1fcafee6b3f3136" # 5.7-rc1
     PKG_SHA256=""
-    PKG_URL="https://www.kernel.org/pub/linux/kernel/v5.x/$PKG_NAME-$PKG_VERSION.tar.xz"
+    PKG_URL="https://github.com/torvalds/linux/archive/$PKG_VERSION.tar.gz"
     PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
     PKG_PATCH_DIRS="amlogic"
+    ;;
+  xdarklight)
+    PKG_VERSION="e753682cfb709ca3367205d168815cd4e9c66975" # Meson 8*
+    PKG_SHA256=""
+    PKG_URL="https://github.com/xdarklight/linux/archive/$PKG_VERSION.tar.gz"
+    PKG_SOURCE_NAME="linux-$LINUX-$PKG_VERSION.tar.gz"
+    PKG_PATCH_DIRS="xdarklight"
     ;;
   raspberrypi)
     PKG_VERSION="67d4589da4940159e2ded20e4bf5fa90b370b4c3" # 5.4.28
@@ -109,6 +116,11 @@ post_patch() {
     if [ "$OPENGLES" = "libmali" ]; then
       sed -e "s|^CONFIG_DRM_LIMA=.*$|# CONFIG_DRM_LIMA is not set|" -i $PKG_BUILD/.config
       sed -e "s|^CONFIG_DRM_PANFROST=.*$|# CONFIG_DRM_PANFROST is not set|" -i $PKG_BUILD/.config
+    fi
+
+    # disable wireguard support if not enabled
+    if [ ! "$WIREGUARD_SUPPORT" = yes ]; then
+      sed -e "s|^CONFIG_WIREGUARD=.*$|# CONFIG_WIREGUARD is not set|" -i $PKG_BUILD/.config
     fi
   fi
 }

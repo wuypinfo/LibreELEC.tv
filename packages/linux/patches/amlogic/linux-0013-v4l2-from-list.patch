@@ -1,56 +1,3 @@
-From f13b6014af30426eef07bb798afc98a5dbd63975 Mon Sep 17 00:00:00 2001
-From: Jonas Karlman <jonas@kwiboo.se>
-Date: Tue, 29 Oct 2019 01:26:01 +0000
-Subject: [PATCH] RFC: media: uapi: h264: Add DPB entry field reference flags
-
-Add DPB entry flags to help indicate when a reference frame is a field picture
-and how the DPB entry is referenced, top or bottom field or full frame.
-
-Signed-off-by: Jonas Karlman <jonas@kwiboo.se>
----
- Documentation/media/uapi/v4l/ext-ctrls-codec.rst | 12 ++++++++++++
- include/media/h264-ctrls.h                       |  4 ++++
- 2 files changed, 16 insertions(+)
-
-diff --git a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
-index 28313c0f4e7c..d472a54d1c4d 100644
---- a/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
-+++ b/Documentation/media/uapi/v4l/ext-ctrls-codec.rst
-@@ -2028,6 +2028,18 @@ enum v4l2_mpeg_video_h264_hierarchical_coding_type -
-     * - ``V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM``
-       - 0x00000004
-       - The DPB entry is a long term reference frame
-+    * - ``V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE``
-+      - 0x00000008
-+      - The DPB entry is a field picture
-+    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_TOP``
-+      - 0x00000010
-+      - The DPB entry is a top field reference
-+    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM``
-+      - 0x00000020
-+      - The DPB entry is a bottom field reference
-+    * - ``V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME``
-+      - 0x00000030
-+      - The DPB entry is a reference frame
- 
- ``V4L2_CID_MPEG_VIDEO_H264_DECODE_MODE (enum)``
-     Specifies the decoding mode to use. Currently exposes slice-based and
-diff --git a/include/media/h264-ctrls.h b/include/media/h264-ctrls.h
-index e877bf1d537c..76020ebd1e6c 100644
---- a/include/media/h264-ctrls.h
-+++ b/include/media/h264-ctrls.h
-@@ -185,6 +185,10 @@ struct v4l2_ctrl_h264_slice_params {
- #define V4L2_H264_DPB_ENTRY_FLAG_VALID		0x01
- #define V4L2_H264_DPB_ENTRY_FLAG_ACTIVE		0x02
- #define V4L2_H264_DPB_ENTRY_FLAG_LONG_TERM	0x04
-+#define V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE	0x08
-+#define V4L2_H264_DPB_ENTRY_FLAG_REF_TOP	0x10
-+#define V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM	0x20
-+#define V4L2_H264_DPB_ENTRY_FLAG_REF_FRAME	0x30
- 
- struct v4l2_h264_dpb_entry {
- 	__u64 reference_ts;
-
 From 178708eae224bd680fd9d7721ffe93e51bb19852 Mon Sep 17 00:00:00 2001
 From: Jonas Karlman <jonas@kwiboo.se>
 Date: Tue, 29 Oct 2019 01:26:02 +0000
@@ -120,7 +67,7 @@ index 568640eab3a6..79d96ff4e685 100644
 +	if ((slices[0].flags & V4L2_H264_SLICE_FLAG_FIELD_PIC) || (slices[0].flags & V4L2_H264_SPS_FLAG_MB_ADAPTIVE_FRAME_FIELD)) {
 +		for (i = 0; i < HANTRO_H264_DPB_SIZE * 2; ++i) {
 +			// check for correct reference use
-+			u32 flag = (i & 0x1) ? V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM : V4L2_H264_DPB_ENTRY_FLAG_REF_TOP;
++			u32 flag = (i & 0x1) ? V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM : V4L2_H264_DPB_ENTRY_FLAG_BOTTOM_FIELD;
 +			if (dpb[i / 2].flags & flag)
 +				dpb_valid |= BIT(HANTRO_H264_DPB_SIZE * 2 - 1 - i);
 +
@@ -241,7 +188,7 @@ index 568640eab3a6..79d96ff4e685 100644
 +			b->pocs[i] = min(dpb[i].bottom_field_order_cnt, dpb[i].top_field_order_cnt);
 +		else if (ref_flag == V4L2_H264_DPB_ENTRY_FLAG_REF_BOTTOM)
 +			b->pocs[i] = dpb[i].bottom_field_order_cnt;
-+		else if (ref_flag == V4L2_H264_DPB_ENTRY_FLAG_REF_TOP)
++		else if (ref_flag == V4L2_H264_DPB_ENTRY_FLAG_BOTTOM_FIELD)
 +			b->pocs[i] = dpb[i].top_field_order_cnt;
 +
  		b->unordered_reflist[b->num_valid] = i;
@@ -303,7 +250,7 @@ index 568640eab3a6..79d96ff4e685 100644
 +	cur_poc = slices[0].flags & V4L2_H264_SLICE_FLAG_BOTTOM_FIELD ?
 +		  dec_param->bottom_field_order_cnt :
 +		  dec_param->top_field_order_cnt;
-+	flags = dpb[dpb_idx].flags & V4L2_H264_DPB_ENTRY_FLAG_FIELD_PICTURE ? 0x2 : 0;
++	flags = dpb[dpb_idx].flags & V4L2_H264_DPB_ENTRY_FLAG_FIELD ? 0x2 : 0;
 +	flags |= abs(dpb[dpb_idx].top_field_order_cnt - cur_poc) <
 +		 abs(dpb[dpb_idx].bottom_field_order_cnt - cur_poc) ?
 +		 0x1 : 0;

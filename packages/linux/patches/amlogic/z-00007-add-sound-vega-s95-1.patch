@@ -1,0 +1,13 @@
+--- a/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-vega-s95.dtsi
+@@ -4,6 +4,9 @@
+  */
+ 
+ #include "meson-gxbb.dtsi"
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/sound/meson-aiu.h>
+ 
+ / {
+ 	compatible = "tronsmart,vega-s95", "amlogic,meson-gxbb";
+
