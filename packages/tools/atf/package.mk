@@ -12,6 +12,8 @@ PKG_DEPENDS_TARGET="toolchain"
 PKG_LONGDESC="ARM Trusted Firmware is a reference implementation of secure world software, including a Secure Monitor executing at Exception Level 3 and various Arm interface standards."
 PKG_TOOLCHAIN="manual"
 
+PKG_STAMP="$ATF_PLATFORM"
+
 [ -n "$KERNEL_TOOLCHAIN" ] && PKG_DEPENDS_TARGET+=" gcc-arm-$KERNEL_TOOLCHAIN:host"
 
 make_target() {
