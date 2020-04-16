@@ -25,7 +25,7 @@ fi
 if [ "$WIREGUARD_SUPPORT" = "yes" ]; then
   # projects using Linux 5.6+ can use the in-kernel module
   case $PROJECT in
-    Allwinner|Amlogic|Generic|ARM)
+    Allwinner|Amlogic|Generic|NXP|ARM)
       PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET wireguard-tools"
       ;;
     *)

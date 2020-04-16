@@ -1,0 +1,26 @@
+Copyright © 2020.  Availink, Inc.  All rights reserved.
+
+Redistribution and use in binary form is permitted provided that the following
+conditions are met:
+
+1. Redistributions must reproduce the above copyright notice, this list of
+conditions and the following disclaimer in the documentation and/or other
+materials provided with the distribution.
+
+2. Redistribution and use shall be used only with Availink silicon products.
+Any other use, reproduction, modification, translation, or compilation of the
+Software is prohibited.
+
+3. No reverse engineering, decompilation, or disassembly is permitted.
+
+4. Redistribution shall not be as part of the Linux kernel or in any other
+form which would require these files themselves to be covered by the terms
+of the GNU General Public License or the GNU Lesser General Public License.
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, THIS SOFTWARE IS PROVIDED
+“AS IS” WITHOUT WARRANTY OF ANY KIND, INCLUDING, WITHOUT LIMITATION, ANY EXPRESS
+OR IMPLIED WARRANTIES OF MERCHANTABILITY, ACCURACY, FITNESS OR SUFFICIENCY FOR A
+PARTICULAR PURPOSE, SATISFACTORY QUALITY, CORRESPONDENCE WITH DESCRIPTION, QUIET
+ENJOYMENT OR NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY RIGHTS.
+AVAILINK, ITS AFFILIATES AND THEIR SUPPLIERS DISCLAIM ANY WARRANTY THAT THE
+DELIVERABLES WILL OPERATE WITHOUT INTERRUPTION OR BE ERROR-FREE.
