@@ -1,7 +1,7 @@
 From 5e04f56757178d2d45701fe3bcc49cff2b575e11 Mon Sep 17 00:00:00 2001
 From: chewitt <github@chrishewitt.net>
 Date: Sun, 11 Aug 2019 09:45:04 +0000
-Subject: [PATCH 06/65] HACK: arm64: dts: meson-g12b-odroid-n2: disable LED
+Subject: [PATCH 06/67] HACK: arm64: dts: meson-g12b-odroid-n2: disable LED
  heartbeat
 
 The constantly flashing blue LED heartbeat is annoying for an HTPC device

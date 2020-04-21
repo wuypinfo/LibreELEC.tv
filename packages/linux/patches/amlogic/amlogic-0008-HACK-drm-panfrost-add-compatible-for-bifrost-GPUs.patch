@@ -1,7 +1,7 @@
 From 5a08bdc522954b96c2fa66c47a70173dec7722d1 Mon Sep 17 00:00:00 2001
 From: chewitt <christianshewitt@gmail.com>
 Date: Thu, 12 Mar 2020 15:50:13 +0000
-Subject: [PATCH 08/65] HACK: drm/panfrost: add compatible for bifrost GPUs
+Subject: [PATCH 08/67] HACK: drm/panfrost: add compatible for bifrost GPUs
 
 ---
  drivers/gpu/drm/panfrost/panfrost_drv.c | 1 +

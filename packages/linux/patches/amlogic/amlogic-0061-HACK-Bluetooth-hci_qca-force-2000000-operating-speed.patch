@@ -1,0 +1,29 @@
+From bd90b57cf63bd47e293e94611d2650aa0f4b4c9e Mon Sep 17 00:00:00 2001
+From: chewitt <christianshewitt@gmail.com>
+Date: Wed, 15 Apr 2020 03:26:36 +0000
+Subject: [PATCH 61/67] HACK: Bluetooth: hci_qca: force 2000000 operating speed
+
+Amlogic hardware runs the BT module at 2000000 so we need to lower the
+default value or QCA9377 SDIO cards do not probe and load firmware.
+
+Signed-off-by: Christian Hewitt <christianshewitt@gmail.com>
+---
+ drivers/bluetooth/hci_qca.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
+index 439392b1c043..141df7a7c039 100644
+--- a/drivers/bluetooth/hci_qca.c
++++ b/drivers/bluetooth/hci_qca.c
+@@ -1678,7 +1678,7 @@ static const struct hci_uart_proto qca_proto = {
+ 	.name		= "QCA",
+ 	.manufacturer	= 29,
+ 	.init_speed	= 115200,
+-	.oper_speed	= 3000000,
++	.oper_speed	= 2000000,
+ 	.open		= qca_open,
+ 	.close		= qca_close,
+ 	.flush		= qca_flush,
+-- 
+2.17.1
+

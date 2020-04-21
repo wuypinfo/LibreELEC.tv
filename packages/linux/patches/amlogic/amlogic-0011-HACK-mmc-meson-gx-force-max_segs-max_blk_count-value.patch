@@ -1,7 +1,7 @@
 From c8aa2a4326d613a2467d6735f3dc0f8224d053de Mon Sep 17 00:00:00 2001
 From: chewitt <christianshewitt@gmail.com>
 Date: Tue, 24 Dec 2019 05:50:45 +0000
-Subject: [PATCH 11/65] HACK: mmc: meson-gx: force max_segs/max_blk_count
+Subject: [PATCH 11/67] HACK: mmc: meson-gx: force max_segs/max_blk_count
  values in dram access quirk
 
 Temporary workaround for the G12A and G12B SDIO chip bug that causes sdio

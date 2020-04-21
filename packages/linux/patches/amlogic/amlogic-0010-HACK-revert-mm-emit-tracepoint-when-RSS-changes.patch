@@ -1,7 +1,7 @@
 From 29b77a3384368bdbc8dedec94684c2dc4f552cde Mon Sep 17 00:00:00 2001
 From: chewitt <christianshewitt@gmail.com>
 Date: Thu, 12 Dec 2019 13:48:45 +0000
-Subject: [PATCH 10/65] HACK: revert mm: emit tracepoint when RSS changes
+Subject: [PATCH 10/67] HACK: revert mm: emit tracepoint when RSS changes
 
 ---
  include/linux/mm.h          | 14 +++-----------

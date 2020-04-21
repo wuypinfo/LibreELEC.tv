@@ -1,7 +1,7 @@
 From 4dede3df8aeddc8b21307b321d704ee3175c9762 Mon Sep 17 00:00:00 2001
 From: Neil Armstrong <narmstrong@baylibre.com>
 Date: Fri, 13 Mar 2020 09:44:50 +0000
-Subject: [PATCH 09/65] HACK: drm/panfrost: add support for custom soft-reset
+Subject: [PATCH 09/67] HACK: drm/panfrost: add support for custom soft-reset
  on Amlogic G12
 
 Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>

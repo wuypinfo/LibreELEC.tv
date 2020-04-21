@@ -1,7 +1,7 @@
 From 4f537a526598e0fda310c3bca947646ec571e34c Mon Sep 17 00:00:00 2001
 From: chewitt <github@chrishewitt.net>
 Date: Sat, 13 Apr 2019 05:45:18 +0000
-Subject: [PATCH 03/65] HACK: arm64: fix Kodi sysinfo CPU information
+Subject: [PATCH 03/67] HACK: arm64: fix Kodi sysinfo CPU information
 
 This allows the CPU information to show in the Kodi sysinfo screen, e.g.
 

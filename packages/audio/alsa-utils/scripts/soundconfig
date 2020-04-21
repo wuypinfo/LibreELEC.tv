@@ -144,6 +144,11 @@ else
 # Amlogic GX HDMI and S/PDIF
   mixer $card 'AIU HDMI CTRL SRC' 'I2S'
   mixer $card 'AIU SPDIF SRC SEL' 'SPDIF'
+
+# RockPI 4B Analog
+  mixer $card 'Right Headphone Mixer Right DAC' on
+  mixer $card 'Left Headphone Mixer Left DAC' on
+
 fi
 
 exit 0

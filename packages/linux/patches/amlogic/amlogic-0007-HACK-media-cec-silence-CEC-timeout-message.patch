@@ -1,7 +1,7 @@
 From dfc567615d12e73f046cdd73b6d5f8b823f2fe02 Mon Sep 17 00:00:00 2001
 From: Christian Hewitt <christianshewitt@gmail.com>
 Date: Tue, 7 Jan 2020 07:12:47 +0000
-Subject: [PATCH 07/65] HACK: media: cec: silence CEC timeout message
+Subject: [PATCH 07/67] HACK: media: cec: silence CEC timeout message
 
 If testing with an AVR that does not pass-through CEC state the system
 log fills with timeout messages. Silence this to stop the log rotation
